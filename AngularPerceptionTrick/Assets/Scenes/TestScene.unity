@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 936285431}
   - component: {fileID: 936285430}
   - component: {fileID: 936285429}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -672,7 +672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5
-  mask:
+  pickupMask:
     serializedVersion: 2
     m_Bits: 256
 --- !u!1 &1015716140
@@ -1082,7 +1082,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1387339832}
   - component: {fileID: 1387339831}
-  m_Layer: 0
+  m_Layer: 1
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1270,7 +1270,7 @@ GameObject:
   - component: {fileID: 1469822394}
   - component: {fileID: 1469822393}
   - component: {fileID: 1469822392}
-  m_Layer: 0
+  m_Layer: 1
   m_Name: EventSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}

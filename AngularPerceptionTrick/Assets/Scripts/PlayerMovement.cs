@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float movementSpeed = 1f;
-    [SerializeField] private LayerMask mask = 0;
+    [SerializeField] private LayerMask pickupMask = 0;
 
     private Vector3 movementVector = Vector3.zero;
     private Vector3 cameraRotation = Vector3.zero;
+    private Vector3 objectCenter = Vector3.zero;
 
     private RaycastHit hit;
     private GameObject heldObject = null;
@@ -30,14 +33,14 @@ public class PlayerMovement : MonoBehaviour
             PushObject();
         }
 
-        if(boundCorners.Count > 0)
-        {
-            foreach(Direction dir in boundCorners)
-            {
+        //if(boundCorners.Count > 0)
+        //{
+        //    foreach(Direction dir in boundCorners)
+        //    {
                 
-                Debug.DrawRay(transform.position, transform.TransformDirection(dir.vec) * dir.mag, Color.red);
-            }
-        }
+        //        Debug.DrawRay(transform.position, transform.TransformDirection(dir.vec) * dir.mag, Color.red);
+        //    }
+        //}
     }
 
     private void Movement()
@@ -59,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E) && holdingObject == false)
         {
-            if(Physics.SphereCast(transform.position, 1f, transform.forward, out hit, Mathf.Infinity, mask))
+            if(Physics.SphereCast(transform.position, 1f, transform.forward, out hit, Mathf.Infinity, pickupMask))
             {
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
@@ -77,7 +80,6 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 corner;
 
                 corner = center + extents;
-                //boundCorners.Add(new Direction((corner - transform.position).normalized, Vector3.Distance(transform.position, corner)));
                 boundCorners.Add(new Direction(transform.InverseTransformPoint(corner).normalized, Vector3.Distance(transform.position, corner)));
 
                 corner = center - extents;
@@ -101,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
                 corner = center + new Vector3(extents.x, extents.y, -extents.z);
                 boundCorners.Add(new Direction(transform.InverseTransformPoint(corner).normalized, Vector3.Distance(transform.position, corner)));
 
-
+                objectCenter = transform.InverseTransformPoint(center).normalized;
 
 
 
@@ -115,6 +117,7 @@ public class PlayerMovement : MonoBehaviour
             heldObject = null;
             holdingObject = false;
             heldObjectCollider = null;
+            boundCorners.Clear();
         }
     }
 
@@ -139,11 +142,46 @@ public class PlayerMovement : MonoBehaviour
     //}
     private void PushObject()
     {
-        
+
+        float lowestDistance = Mathf.Infinity;
+        float distanceFromPlayer = 0f;
+        Vector3 shortestPath = Vector3.zero;
+
+        foreach(Direction dir in boundCorners)
+        {
+            if(Physics.Raycast(transform.position, transform.TransformDirection(dir.vec), out hit, Mathf.Infinity, LayerMask.GetMask("Default")))
+            {
+                //lowestDistance = hit.distance - dir.mag < lowestDistance ? hit.distance : lowestDistance;
+                    Debug.DrawRay(transform.position, transform.TransformDirection(dir.vec) * hit.distance, Color.yellow);
+
+                if(hit.distance - dir.mag < lowestDistance)
+                {
+                    lowestDistance = hit.distance - dir.mag;
+                    distanceFromPlayer = hit.distance - heldObject.transform.localScale.x/2;
+                    shortestPath = transform.TransformDirection(dir.vec) * hit.distance;
+
+                    
+                }
+            }
+        }
+
+        float scale = ScaleObject(distanceFromPlayer);
+
+        Debug.DrawRay(transform.position, shortestPath, Color.red);
+        Debug.DrawRay(transform.position, transform.TransformDirection(objectCenter) * 10, Color.blue);
+
+
+        heldObject.transform.position = transform.position + transform.TransformDirection(objectCenter) * (distanceFromPlayer);
+
+
     }
 
-    private void ScaleObject()
+    private float ScaleObject(float distance)
     {
+        float scale = distance / originalDistanceToPlayer * originalScale.x;
+        Vector3 newScale = new Vector3(scale, scale, scale);
 
+        heldObject.transform.localScale = newScale;
+        return scale/2;
     }
 }
