@@ -33,19 +33,11 @@ public class PlayerMovement : MonoBehaviour
             PushObject();
         }
 
-        //if(boundCorners.Count > 0)
-        //{
-        //    foreach(Direction dir in boundCorners)
-        //    {
-                
-        //        Debug.DrawRay(transform.position, transform.TransformDirection(dir.vec) * dir.mag, Color.red);
-        //    }
-        //}
     }
 
     private void Movement()
     {
-        movementVector = new Vector3(Input.GetAxisRaw("Horizontal") , 0f, Input.GetAxisRaw("Vertical"));
+        movementVector = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Jump"), Input.GetAxisRaw("Vertical")) ;
 
         transform.position += transform.rotation * movementVector * Time.deltaTime * movementSpeed;
     }
@@ -121,25 +113,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    //private void PushObject()
-    //{
-
-    //    if (Physics.Raycast(transform.position ,transform.forward, out hit, Mathf.Infinity, LayerMask.GetMask("Default")))
-    //    {
-    //        ScaleObject();
-    //        Vector3 distanceFromHit = (transform.position - heldObject.transform.position).normalized* ((heldObject.GetComponent<SphereCollider>().radius + 0.1f )* heldObject.transform.localScale.x);
-    //        heldObject.transform.position = hit.point + distanceFromHit;
-    //    }
-
-    //}
-
-    //private void ScaleObject()
-    //{
-    //    float scale = Vector3.Distance(heldObject.transform.position, transform.position) / originalDistanceToPlayer * originalScale.x;
-    //    Vector3 newScale = new Vector3(scale, scale, scale);
-
-    //    heldObject.transform.localScale = newScale;
-    //}
     private void PushObject()
     {
 
@@ -151,8 +124,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if(Physics.Raycast(transform.position, transform.TransformDirection(dir.vec), out hit, Mathf.Infinity, LayerMask.GetMask("Default")))
             {
-                //lowestDistance = hit.distance - dir.mag < lowestDistance ? hit.distance : lowestDistance;
-                    Debug.DrawRay(transform.position, transform.TransformDirection(dir.vec) * hit.distance, Color.yellow);
+                Debug.DrawRay(transform.position, transform.TransformDirection(dir.vec) * hit.distance, Color.yellow);
 
                 if(hit.distance - dir.mag < lowestDistance)
                 {
