@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\GitHubRepositories\AngularDiameter\AngularPerceptionTrick" t="IncludeRecursive">
+      <e p="AngularPerceptionTrick.sln" t="IncludeFlat" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="Scripts" t="Include">
+          <e p="Direction.cs" t="Include" />
+          <e p="MathHelper.cs" t="Include" />
+          <e p="PlayerMovement.cs" t="Include" />
+          <e p="ScalableObject.cs" t="Include" />
+        </e>
+      </e>
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="Packages" t="ExcludeRecursive" />
+      <e p="Temp\Bin" t="ExcludeRecursive" />
+    </e>
+    <e p="C:\Users\marcus.lundqvist\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\marcus.lundqvist\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\Rider\v202\SolutionCaches\_AngularPerceptionTrick.-1554529737.00" t="ExcludeRecursive" />
+  </component>
+</project>
