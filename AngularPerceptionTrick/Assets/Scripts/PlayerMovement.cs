@@ -8,7 +8,6 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float movementSpeed = 1f;
     [SerializeField] private LayerMask pickupMask = 0;
-    [SerializeField] private bool beShit = false;
     [SerializeField] private LayerMask pushingMask = 0;
 
     private Vector3 movementVector = Vector3.zero;
@@ -56,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if(Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, Mathf.Infinity, pickupMask))
             {
+                // saves values and changes collision on held object
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
                 heldObject = hit.collider.gameObject;
@@ -73,6 +73,8 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 center = heldObjectCollider.bounds.center;
 
                 Vector3 corner;
+                
+                // saves a list of points to encapsulate the held object for raycasts
 
                 corner = center + extents;
                 raycastPoints.Add(new Direction(transform.InverseTransformPoint(corner).normalized, Vector3.Distance(transform.position, corner)));
@@ -104,6 +106,7 @@ public class PlayerMovement : MonoBehaviour
 
             }
         }
+        // drops the object if held
         else if (Input.GetKeyDown(KeyCode.E))
         {
             heldObject.layer = 8;
@@ -124,29 +127,19 @@ public class PlayerMovement : MonoBehaviour
         float lowestDistance = Mathf.Infinity;
         float distanceFromPlayer = 0f;
         Vector3 shortestPath = Vector3.zero;
-
-        if (beShit == false)
+        
+        foreach (Direction dir in raycastPoints)
         {
-            foreach (Direction dir in raycastPoints)
+            if (Physics.Raycast(transform.position, transform.TransformDirection(dir.vec), out hit, Mathf.Infinity, pushingMask))
             {
-                if (Physics.Raycast(transform.position, transform.TransformDirection(dir.vec), out hit, Mathf.Infinity, pushingMask))
+                Debug.DrawRay(transform.position, transform.TransformDirection(dir.vec) * hit.distance, Color.yellow);
+
+                if (hit.distance - dir.mag < lowestDistance)
                 {
-                    Debug.DrawRay(transform.position, transform.TransformDirection(dir.vec) * hit.distance, Color.yellow);
-
-                    if (hit.distance - dir.mag < lowestDistance)
-                    {
-                        lowestDistance = hit.distance - dir.mag;
-                        distanceFromPlayer = hit.distance - heldObject.transform.localScale.x / 2;
-                        shortestPath = transform.TransformDirection(dir.vec) * hit.distance;
-                    }
+                    lowestDistance = hit.distance - dir.mag;
+                    distanceFromPlayer = hit.distance - heldObject.transform.localScale.x / 2;
+                    shortestPath = transform.TransformDirection(dir.vec) * hit.distance;
                 }
-            }
-        }
-        else
-        {
-            if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity, pushingMask))
-            {
-                distanceFromPlayer = hit.distance - heldObject.transform.localScale.x / 2;
             }
         }
 
